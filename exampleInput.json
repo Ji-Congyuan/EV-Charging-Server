@@ -1,8 +1,8 @@
 {
-    "od pair": "{
+    "od pair": {
         "origin":["1","2"],
         "destination":["2","1"]
-    }",
+    },
     "timeHorizon": "2",
     "demand": [
         ["1", "2", "3"],
