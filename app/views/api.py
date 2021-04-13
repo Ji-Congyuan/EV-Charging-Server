@@ -5,6 +5,6 @@ from flask import session
 api = Blueprint('api', __name__)
 
 
-@api.route('/')
+@api.route('/', methods=['POST'])
 def requireChargingResult():
     pass
