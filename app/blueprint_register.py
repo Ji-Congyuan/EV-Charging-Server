@@ -1,4 +1,4 @@
 from app import app
-from app.views.api import api
+from app.views.charging_demand import charging_demand
 
-app.register_blueprint(api, url_prefix='/api')
+app.register_blueprint(charging_demand, url_prefix='/api')
