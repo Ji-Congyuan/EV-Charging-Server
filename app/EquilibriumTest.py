@@ -94,9 +94,9 @@ def Equilibrium(experiment_id, node_data, network_data, station_data, demand_dat
     for i in range(len(network_data)):
         NetworkData[i,0] = network_data[i]['fromNode']
         NetworkData[i,1] = network_data[i]['toNode']
-        NetworkData[i,2] = 5*network_data[i]['distance']/1000/30*60
+        NetworkData[i,2] = 3*network_data[i]['distance']/1000/30*60
         NetworkData[i,3] = network_data[i]['capacity']
-        NetworkData[i,4] = 5*network_data[i]['distance']/1000/5
+        NetworkData[i,4] = 3*network_data[i]['distance']/1000/5
         NetworkData[i,5] = network_data[i]['linkId']
     
     DemandData = [[None]*4 for _ in range(len(demand_data))]
@@ -146,8 +146,8 @@ def Equilibrium(experiment_id, node_data, network_data, station_data, demand_dat
             jsonlog['pile_demand'][str(j)] = ChargingAmount[k]
             k = k+1
         for j in range(ne.LinkSize):
-            LinkFlow[j][i] = ne.LinkFlow[j]
-            jsonlog['link_flow'][str(ne.NetworkLink[i,5])] = LinkFlow[j] * 1000
+            LinkFlow[j][i] = ne.LinkFlow[j] * 1000
+            jsonlog['link_flow'][str(ne.NetworkLink[i,5])] = LinkFlow[j]
         Networkload[i] = ne.NetworkLoad
         jsonlog['network_load'] = Networkload
         time_end = time.time()       
