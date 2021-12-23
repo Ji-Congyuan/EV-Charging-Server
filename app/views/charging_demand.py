@@ -3,21 +3,15 @@ import os
 import json
 from flask import Blueprint
 from flask import request
-from concurrent.futures import ThreadPoolExecutor
 import threading
 from app.EquilibriumTest import Equilibrium
 
 
 charging_demand = Blueprint('charging_demand', __name__)
-# computation_executor = ThreadPoolExecutor(max_workers=8)
-# experiment_id_counter = 0
 
 
 @charging_demand.route('/input_data', methods=['POST'])
 def input_data():
-    # global experiment_id_counter
-    # experiment_id = str(experiment_id_counter)
-    # experiment_id_counter += 1
     with open('./app/counter.json', 'r') as f:
         experiment_id = int(json.load(f)['counter'])
 
@@ -44,7 +38,7 @@ def input_data():
     threading.Thread(target=Equilibrium, args=args).start()
 
     return {
-        'id': experiment_id
+        'id': str(experiment_id)
     }
 
 
