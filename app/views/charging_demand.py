@@ -4,19 +4,27 @@ import json
 from flask import Blueprint
 from flask import request
 from concurrent.futures import ThreadPoolExecutor
+import threading
 from app.EquilibriumTest import Equilibrium
 
 
 charging_demand = Blueprint('charging_demand', __name__)
-computation_executor = ThreadPoolExecutor(max_workers=8)
-experiment_id_counter = 0
+# computation_executor = ThreadPoolExecutor(max_workers=8)
+# experiment_id_counter = 0
 
 
 @charging_demand.route('/input_data', methods=['POST'])
 def input_data():
-    global experiment_id_counter
-    experiment_id = str(experiment_id_counter)
-    experiment_id_counter += 1
+    # global experiment_id_counter
+    # experiment_id = str(experiment_id_counter)
+    # experiment_id_counter += 1
+    with open('./app/counter.json', 'r') as f:
+        experiment_id = int(json.load(f)['counter'])
+
+    experiment_id += 1
+    with open('./app/counter.json', 'w') as f:
+        json.dump({'counter': experiment_id}, f)
+
     args = (
         experiment_id,                                         # string
         request.json.get('node_data'),                         # json
@@ -27,11 +35,13 @@ def input_data():
         int(request.json.get('low_level_threshold')),          # int
         int(request.json.get('high_level_threshold'))          # int
     )
-    print(args)
+    # print(args)
     with open('./app/experiment_input/' + str(experiment_id) + '.json', 'w') as file_obj:
         json.dump(args, file_obj)
 
-    computation_executor.submit(lambda x: Equilibrium(*x), args)
+    # computation_executor.submit(lambda x: Equilibrium(*x), args)
+    print("experiment id: " + str(experiment_id) + " is running")
+    threading.Thread(target=Equilibrium, args=args).start()
 
     return {
         'id': experiment_id
