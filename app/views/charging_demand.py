@@ -4,7 +4,7 @@ import json
 from flask import Blueprint
 from flask import request
 from concurrent.futures import ThreadPoolExecutor
-from app.EquilibriumTestTripChain import TripChainMain
+from app.EquilibriumTest import Equilibrium
 
 
 charging_demand = Blueprint('charging_demand', __name__)
@@ -14,7 +14,6 @@ experiment_id_counter = 0
 
 @charging_demand.route('/input_data', methods=['POST'])
 def input_data():
-    print("input data called")
     global experiment_id_counter
     experiment_id = str(experiment_id_counter)
     experiment_id_counter += 1
@@ -22,14 +21,17 @@ def input_data():
         experiment_id,                                         # string
         request.json.get('node_data'),                         # json
         request.json.get('network_data'),                      # json
-        request.json.get('pile_data'),                         # json
+        int(request.json.get('pile_density')),                 # int
         request.json.get('demand_data'),                       # json
         int(request.json.get('initial_electricity_level')),    # int
         int(request.json.get('low_level_threshold')),          # int
         int(request.json.get('high_level_threshold'))          # int
     )
     print(args)
-    computation_executor.submit(lambda x: TripChainMain(*x), args)
+    with open('./app/experiment_input/' + str(experiment_id) + '.json', 'w') as file_obj:
+        json.dump(args, file_obj)
+
+    computation_executor.submit(lambda x: Equilibrium(*x), args)
 
     return {
         'id': experiment_id
@@ -50,6 +52,7 @@ def all_finished_result_ids():
 
 @charging_demand.route('/get_output_data', methods=['POST'])
 def get_output_data():
+    print("get_output_data called")
     get_id = request.json.get('experiment_id')
     with open('./app/experiment_result/' + get_id + '.json', 'r') as f:
         output_data = json.load(f)
