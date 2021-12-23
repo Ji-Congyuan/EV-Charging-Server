@@ -121,7 +121,7 @@ def Equilibrium(experiment_id, node_data, network_data, station_data, demand_dat
     LinkFlow = [[None]*timeslot for _ in range(ne.LinkSize)]
     Networkload = [None]*timeslot
 
-    jsonlog = {"charging_demand":{},"link_flow":{},"network_load":{}}
+    jsonlog = {"pile_demand":{},"link_flow":{},"network_load":{}}
 
 
     StartEnd = np.zeros([timeslot,2])
@@ -142,12 +142,12 @@ def Equilibrium(experiment_id, node_data, network_data, station_data, demand_dat
         ne.EquilibriumState()
         k = 0
         for j in ne.ChargingList:
-            ChargingAmount[k][i] = ne.ChargingAmount[int(j)]
-            jsonlog['charging_demand'][str(j)] = ChargingAmount[k]
+            ChargingAmount[k][i] = 1000 * ne.ChargingAmount[int(j)]
+            jsonlog['pile_demand'][str(j)] = ChargingAmount[k]
             k = k+1
         for j in range(ne.LinkSize):
             LinkFlow[j][i] = ne.LinkFlow[j]
-            jsonlog['link_flow'][str(ne.NetworkLink[i,5])] = LinkFlow[j]
+            jsonlog['link_flow'][str(ne.NetworkLink[i,5])] = LinkFlow[j] * 1000
         Networkload[i] = ne.NetworkLoad
         jsonlog['network_load'] = Networkload
         time_end = time.time()       
