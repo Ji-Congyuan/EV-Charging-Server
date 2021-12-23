@@ -5,7 +5,7 @@ Created on Sun Oct 10 21:49:04 2021
 @author: ZhixiongLuo
 """
 
-import network_equilibrium as NE
+import app.network_equilibrium as NE
 import numpy as np
 # import xlrd as xd
 import time
